@@ -25,15 +25,18 @@ class Mydataset(Dataset):
         img_name = self.image_path[idx]  # 获取各个图片索引
         img_item_path = os.path.join(self.image_dir, img_name)  # 地址相加获取文件中各个图片的地址
         # 读取图像数据
-        img_PIL = io.imread(img_item_path)
+        img = io.imread(img_item_path)
+
+        img = img/255.0
+        img_tensor = torch.FloatTensor(img)#.unsqueeze(0)
 
         # 避免totensor时HWC变为CHW对图像像素分布产生的影响，但不知道是不是要加这个操作
         # 从zxy到xyz
-        img_PIL = img_PIL.transpose((1, 2, 0))
+        # img_PIL = img_PIL.transpose((1, 2, 0))
 
         # 调用预处理
         # totensor又会变成zxy
-        img_tensor = self.data_preproccess(img_PIL)
+        # img_tensor = self.data_preproccess(img_PIL)
 
         # 维度扩展，需要得到通道单通道1
         img_tensor = torch.unsqueeze(img_tensor, dim=0)
